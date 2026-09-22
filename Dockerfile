@@ -2,7 +2,7 @@
 FROM php:8.5.10-fpm-alpine@sha256:ce1dcc234879feab0f309100e55e89e7cf21b9085e76de2a03a8240cec02751e
 
 LABEL org.opencontainers.image.source="https://github.com/mikusaa/docker-php" \
-      org.opencontainers.image.description="面向 Typecho 等 PHP 应用的 PHP-FPM Alpine 镜像"
+      org.opencontainers.image.description="预装常用扩展的 PHP-FPM Alpine 镜像"
 
 ADD --chmod=755 --checksum=sha256:4fb76a1fb1085e1e2148f3919b8e9ba8429f749b3cc96fa785a23f173192dc9a \
     https://github.com/mlocati/docker-php-extension-installer/releases/download/2.11.27/install-php-extensions \

@@ -1,10 +1,10 @@
 # docker-php
 
-这是一个基于官方 `php:8.5-fpm-alpine` 制作的 PHP-FPM 镜像，主要用于运行
-Typecho，也可以用于其他常规 PHP 应用。
+这是一个基于官方 `php:8.5-fpm-alpine` 制作的通用 PHP-FPM 镜像，预装常用扩展，
+并提供运行时用户和时区配置。
 
-镜像只提供 PHP 运行环境，不包含 Typecho、Nginx 和数据库。应用文件需要从宿主机
-挂载，HTTP 请求则由 Nginx 等 Web 服务器通过 FastCGI 转发给 PHP-FPM。
+镜像只提供 PHP 运行环境，不包含应用程序、Web 服务器和数据库。应用文件需要从
+宿主机挂载，HTTP 请求则由 Nginx 等 Web 服务器通过 FastCGI 转发给 PHP-FPM。
 
 支持 `linux/amd64` 和 `linux/arm64`。
 
@@ -50,7 +50,7 @@ ghcr.io/mikusaa/docker-php:8.5.10-fpm-alpine
 
 ## 使用方法
 
-下面的例子假设 Typecho 文件位于当前目录的 `typecho` 文件夹。
+下面以 Typecho 为例，假设程序文件位于当前目录的 `typecho` 文件夹。
 
 ```yaml
 services:
@@ -112,7 +112,7 @@ docker compose up -d
 | `PUID` | `1000` | PHP-FPM 工作用户 `www-data` 的 UID |
 | `PGID` | `1000` | PHP-FPM 工作用户 `www-data` 的 GID |
 
-`PUID` 和 `PGID` 必须是非零数字。它们应该与宿主机上 Typecho 文件的所有者一致，
+`PUID` 和 `PGID` 必须是非零数字。它们应该与宿主机上应用文件的所有者一致，
 否则 PHP 可能无法写入上传目录、缓存或配置文件。镜像只修改容器内 `www-data` 的身份，
 不会递归修改挂载目录的权限。
 
@@ -157,6 +157,6 @@ pm.max_spare_servers = 3
 - `9000` 是 FastCGI 端口，不是 HTTP 端口，不要直接暴露到公网；
 - 不要在 Compose 中设置 `user:`，入口脚本需要 root 权限来应用 `PUID`、`PGID` 和时区，
   PHP-FPM 工作进程仍会以 `www-data` 运行；
-- PHP 版本升级前应先检查 Typecho 主题和插件的兼容性；
+- PHP 版本升级前应先检查应用程序及其扩展、插件的兼容性；
 - 生产环境建议固定完整版本标签，确认新镜像可用后再升级；
-- Typecho 程序、`usr` 目录和数据库需要单独备份，本镜像不会管理这些数据。
+- 应用文件、持久化目录和数据库需要单独备份，本镜像不会管理这些数据。
