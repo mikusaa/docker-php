@@ -103,7 +103,10 @@ jobs:
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
-          cache-from: type=gha,scope=release
+          cache-from: |
+            type=gha,scope=release
+            type=gha,scope=ci-amd64
+            type=gha,scope=ci-arm64
           cache-to: type=gha,mode=max,scope=release
           provenance: mode=max
           sbom: true
