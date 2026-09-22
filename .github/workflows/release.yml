@@ -12,15 +12,17 @@ permissions:
 jobs:
   test:
     name: Test release (${{ matrix.platform }})
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - platform: linux/amd64
             suffix: amd64
+            runner: ubuntu-24.04
           - platform: linux/arm64
             suffix: arm64
+            runner: ubuntu-24.04-arm
 
     steps:
       - name: Check out repository
@@ -36,9 +38,6 @@ jobs:
             echo "Tag $GITHUB_REF_NAME does not match Dockerfile PHP version $image_version" >&2
             exit 1
           fi
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
