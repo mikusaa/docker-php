@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM php:8.5.11-fpm-alpine@sha256:fa01fb1645cd0fc566a5f146b099adace33b906571f972f71f2182a7c12d1cd7
+FROM php:8.5.12-fpm-alpine@sha256:c15690bd932bd6d33f43ccae6ddd8d60acb93cee50c16afc6e699265d5d86583
 
 LABEL org.opencontainers.image.source="https://github.com/mikusaa/docker-php" \
       org.opencontainers.image.description="预装常用扩展的 PHP-FPM Alpine 镜像"
@@ -18,9 +18,18 @@ ENV TZ=Asia/Shanghai \
     COMPOSER_HOME=/tmp/composer \
     COMPOSER_ALLOW_SUPERUSER=1
 
+# Pin the same official extension releases while PECL downloads return HTTP 500.
 RUN set -eux; \
     apk add --no-cache git shadow tzdata; \
-    install-php-extensions imagick bcmath pdo_mysql pdo_pgsql redis mysqli zip gd exif intl
+    git clone --branch 6.3.0 --depth 1 https://github.com/phpredis/phpredis.git /tmp/phpredis; \
+    test "$(git -C /tmp/phpredis rev-parse HEAD)" = df4fab2de7fc327c54c94a13af2b9542e4fbd720; \
+    git -C /tmp/phpredis submodule update --init --depth 1; \
+    install-php-extensions \
+        Imagick/imagick@70087bab33eab913e99ac77d64d04d1a2fd0b7b0 \
+        bcmath pdo_mysql pdo_pgsql \
+        /tmp/phpredis \
+        mysqli zip gd exif intl; \
+    rm -rf /tmp/phpredis
 
 WORKDIR /home/wwwroot
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
