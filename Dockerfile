@@ -1,6 +1,10 @@
 # syntax=docker/dockerfile:1.7
 FROM php:8.5.11-fpm-alpine@sha256:fa01fb1645cd0fc566a5f146b099adace33b906571f972f71f2182a7c12d1cd7
 
+# Bake temporarily replaces this base with the signed upstream 8.5.12 source build.
+# Fail closed if built without that replacement before the official image update.
+RUN php -r 'exit(version_compare(PHP_VERSION, "8.5.12", ">=") ? 0 : 1);'
+
 LABEL org.opencontainers.image.source="https://github.com/mikusaa/docker-php" \
       org.opencontainers.image.description="预装常用扩展的 PHP-FPM Alpine 镜像"
 

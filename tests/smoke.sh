@@ -3,7 +3,7 @@ set -eu
 
 IMAGE="${1:-docker-php:test}"
 PLATFORM="${2:-linux/amd64}"
-EXPECTED_PHP_VERSION="${EXPECTED_PHP_VERSION:-$(sed -nE 's/^FROM php:([0-9]+\.[0-9]+\.[0-9]+)-fpm-alpine.*/\1/p' Dockerfile)}"
+EXPECTED_PHP_VERSION="${EXPECTED_PHP_VERSION:-$(sh ./tests/php-version.sh)}"
 CONTAINER_ID=""
 OUTPUT_FILE="$(mktemp)"
 
@@ -34,6 +34,17 @@ if ($missing !== []) {
 '
 
 docker run --rm --platform "$PLATFORM" "$IMAGE" composer --version
+
+docker run --rm --platform "$PLATFORM" "$IMAGE" sh -eu -c '
+    docker-php-source extract
+    cd /usr/src/php
+    export TEST_PHP_EXECUTABLE=/usr/local/bin/php REPORT_EXIT_STATUS=1
+    php run-tests.php -q -n \
+        Zend/tests/oom_array_fill_001.phpt \
+        Zend/tests/oom_unserialize_001.phpt \
+        Zend/tests/oom_json_decode_001.phpt \
+        Zend/tests/oom_soft_limit_exceeded_fcall.phpt
+'
 
 docker run --rm --platform "$PLATFORM" "$IMAGE" php-fpm -tt >"$OUTPUT_FILE" 2>&1
 grep -F "listen = 9000" "$OUTPUT_FILE" >/dev/null

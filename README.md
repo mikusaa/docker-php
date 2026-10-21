@@ -8,6 +8,11 @@
 
 支持 `linux/amd64` 和 `linux/arm64`。
 
+当前安全发布使用 PHP 8.5.12。官方 Alpine 镜像发布前，通过 `docker buildx bake`
+按 Docker 官方仓库固定提交构建，沿用其 PHP 正式源码 SHA-256 和 GPG 签名验证。
+`docker-bake.hcl` 只替换 Dockerfile 中旧的完整基础镜像引用；Dependabot 更新该引用后，
+构建自动使用新的官方镜像。直接构建旧基础镜像会被版本检查阻止。
+
 ## 和官方镜像的区别
 
 在官方 PHP-FPM Alpine 镜像的基础上，本镜像增加了：
@@ -31,20 +36,20 @@ PHP-FPM 监听容器内的 `9000` 端口，`pm.max_requests` 设置为 `300`，�
 Docker Hub：
 
 ```text
-mikusa/docker-php:8.5.10-fpm-alpine
+mikusa/docker-php:8.5.12-fpm-alpine
 ```
 
 GitHub Container Registry：
 
 ```text
-ghcr.io/mikusaa/docker-php:8.5.10-fpm-alpine
+ghcr.io/mikusaa/docker-php:8.5.12-fpm-alpine
 ```
 
 可用标签：
 
 | 标签 | 说明 |
 | --- | --- |
-| `8.5.10-fpm-alpine` | 固定 PHP 补丁版本，生产环境推荐使用 |
+| `8.5.12-fpm-alpine` | 固定 PHP 补丁版本，生产环境推荐使用 |
 | `8.5-fpm-alpine` | 跟随最新的 PHP 8.5 补丁版本 |
 | `latest` | 当前推荐版本 |
 
@@ -55,7 +60,7 @@ ghcr.io/mikusaa/docker-php:8.5.10-fpm-alpine
 ```yaml
 services:
   php:
-    image: mikusa/docker-php:8.5.10-fpm-alpine
+    image: mikusa/docker-php:8.5.12-fpm-alpine
     restart: unless-stopped
     environment:
       TZ: Asia/Shanghai
