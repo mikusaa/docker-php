@@ -18,9 +18,14 @@ ENV TZ=Asia/Shanghai \
     COMPOSER_HOME=/tmp/composer \
     COMPOSER_ALLOW_SUPERUSER=1
 
+# Pin the same official extension releases while PECL downloads return HTTP 500.
 RUN set -eux; \
     apk add --no-cache git shadow tzdata; \
-    install-php-extensions imagick bcmath pdo_mysql pdo_pgsql redis mysqli zip gd exif intl
+    install-php-extensions \
+        Imagick/imagick@70087bab33eab913e99ac77d64d04d1a2fd0b7b0 \
+        bcmath pdo_mysql pdo_pgsql \
+        phpredis/phpredis@df4fab2de7fc327c54c94a13af2b9542e4fbd720 \
+        mysqli zip gd exif intl
 
 WORKDIR /home/wwwroot
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
