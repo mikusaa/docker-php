@@ -21,11 +21,15 @@ ENV TZ=Asia/Shanghai \
 # Pin the same official extension releases while PECL downloads return HTTP 500.
 RUN set -eux; \
     apk add --no-cache git shadow tzdata; \
+    git clone --branch 6.3.0 --depth 1 https://github.com/phpredis/phpredis.git /tmp/phpredis; \
+    test "$(git -C /tmp/phpredis rev-parse HEAD)" = df4fab2de7fc327c54c94a13af2b9542e4fbd720; \
+    git -C /tmp/phpredis submodule update --init --depth 1; \
     install-php-extensions \
         Imagick/imagick@70087bab33eab913e99ac77d64d04d1a2fd0b7b0 \
         bcmath pdo_mysql pdo_pgsql \
-        phpredis/phpredis@df4fab2de7fc327c54c94a13af2b9542e4fbd720 \
-        mysqli zip gd exif intl
+        /tmp/phpredis \
+        mysqli zip gd exif intl; \
+    rm -rf /tmp/phpredis
 
 WORKDIR /home/wwwroot
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
