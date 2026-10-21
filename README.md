@@ -8,7 +8,8 @@
 
 支持 `linux/amd64` 和 `linux/arm64`。
 
-当前安全发布使用 PHP 8.5.12。官方 Alpine 镜像发布前，通过 `docker buildx bake`
+当前安全发布使用 PHP 8.5.12。官方 Alpine 镜像发布前，通过
+`PHP_FROM="$(sh ./tests/php-version.sh --base)" docker buildx bake`
 按 Docker 官方仓库固定提交构建，沿用其 PHP 正式源码 SHA-256 和 GPG 签名验证。
 `docker-bake.hcl` 只替换 Dockerfile 中旧的完整基础镜像引用；Dependabot 更新该引用后，
 构建自动使用新的官方镜像。直接构建旧基础镜像会被版本检查阻止。

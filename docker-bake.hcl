@@ -1,3 +1,7 @@
+variable "PHP_FROM" {
+  default = ""
+}
+
 group "default" {
   targets = ["image"]
 }
@@ -13,7 +17,7 @@ target "image" {
   context = "."
   dockerfile = "Dockerfile"
   # Match only the old pinned base. Dependabot's official update exits this override.
-  contexts = {
+  contexts = PHP_FROM == "php:8.5.11-fpm-alpine@sha256:fa01fb1645cd0fc566a5f146b099adace33b906571f972f71f2182a7c12d1cd7" ? {
     "php:8.5.11-fpm-alpine@sha256:fa01fb1645cd0fc566a5f146b099adace33b906571f972f71f2182a7c12d1cd7" = "target:php-security-source"
-  }
+  } : {}
 }
