@@ -45,6 +45,7 @@ jobs:
       - name: Build image
         uses: docker/bake-action@59cb1203cd42bcefd40a1b6d73b589e48c86040e # v7.5.0
         with:
+          source: .
           targets: image
           set: |
             *.platform=${{ matrix.platform }}
@@ -101,6 +102,7 @@ jobs:
       - name: Build and push
         uses: docker/bake-action@59cb1203cd42bcefd40a1b6d73b589e48c86040e # v7.5.0
         with:
+          source: .
           files: |
             ./docker-bake.hcl
             ${{ steps.metadata.outputs.bake-file }}
