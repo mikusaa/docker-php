@@ -104,6 +104,20 @@ server {
 docker compose up -d
 ```
 
+## 依赖自动更新
+
+Dependabot 每周检查 Docker 基础镜像和 GitHub Actions 依赖。由 Dependabot 提交的
+PHP 补丁版本更新（例如 `8.5.10` 到 `8.5.11`）会自动启用 squash 合并，
+等待 `linux/amd64` 和 `linux/arm64` 的构建、冒烟测试全部通过后合并到 `main`。
+PHP 次版本、主版本以及其他依赖更新仍需人工处理。
+
+仓库需要开启 Allow auto-merge，并将 `Build and test (linux/amd64)` 和
+`Build and test (linux/arm64)` 设置为 `main` 分支的必需状态检查。
+这两项设置由 GitHub 仓库配置管理，不随代码文件自动生效。
+
+合并更新后仍需创建与 Dockerfile 中 PHP 版本一致的 `v版本号` 标签，才会触发镜像发布。
+使用方还需要拉取新镜像并重建 PHP 容器。
+
 ## 环境变量
 
 | 变量 | 默认值 | 说明 |
