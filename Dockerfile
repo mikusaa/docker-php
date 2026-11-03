@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM php:8.5.12-fpm-alpine@sha256:c15690bd932bd6d33f43ccae6ddd8d60acb93cee50c16afc6e699265d5d86583
+FROM php:8.5.12-fpm-alpine@sha256:4c2818074ec49f6abe46620f3965e0cb75bc3a5f2b417edd1aacaba6f091c40e
 
 LABEL org.opencontainers.image.source="https://github.com/mikusaa/docker-php" \
       org.opencontainers.image.description="预装常用扩展的 PHP-FPM Alpine 镜像"
